@@ -5,7 +5,7 @@ public class Demo {
         String[] difficulties = {"beginner", "intermediate", "expert"};
         Difficulty difficulty = Difficulty.valueOf(
                 (String) JOptionPane.showInputDialog(null, "Choose difficulty", "Difficulty",
-                                                JOptionPane.QUESTION_MESSAGE, new ImageIcon("mine.png"), difficulties, difficulties[0]));
+                                                JOptionPane.QUESTION_MESSAGE, null, difficulties, difficulties[0]));
         Board minesweeper = new Board(difficulty);
     }
 }
