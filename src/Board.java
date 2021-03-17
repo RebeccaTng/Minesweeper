@@ -1,13 +1,17 @@
 import javax.swing.*;
 import java.awt.*;
 
-public class Board extends JPanel {
+public class Board {
 
 	private static Tile[][] tiles;
 	private Difficulty difficulty;
-	private int mines;
+	private static int mines;
 	private int row;
 	private int col;
+	private static int flagsLeft;
+	private static JLabel flags;
+	private static int totalTiles;
+	private static boolean victory;
 
 	public Board(Difficulty difficulty) {
 		this.difficulty = difficulty;
@@ -23,39 +27,49 @@ public class Board extends JPanel {
 				row = 8;
 				col = 8;
 				mines = 10;
-				frame.setSize(700, 700);
-				minePanel.setPreferredSize(new Dimension(600,600));
+				frame.setSize(650, 700);
 				break;
 			case intermediate:
 				row = 16;
 				col = 16;
 				mines = 40;
-				frame.setSize(1000, 1000);
-				minePanel.setPreferredSize(new Dimension(900,900));
+				frame.setSize(1000, 1050);
 				break;
 			case expert:
 				row = 16;
 				col = 30;
 				mines = 99;
-				frame.setSize(1700, 1000);
-				minePanel.setPreferredSize(new Dimension(1600,900));
+				frame.setSize(1700, 1050);
 				break;
 		}
 
 		tiles = new Tile[row][col];
+		flagsLeft = mines;
+		totalTiles = row*col;
+		victory = false;
+
+		flags = new JLabel("Flags left: " + flagsLeft);
+		flags.setFont(new Font("", Font.PLAIN, 20));
+		flags.setIcon(new ImageIcon("flag.png"));
+		flags.setBorder(BorderFactory.createEtchedBorder(1));
+		flags.setPreferredSize(new Dimension(160,50));
+		JPanel flagPanel = new JPanel(new GridBagLayout());
+		flagPanel.add(flags);
+		flagPanel.setBorder(BorderFactory.createEmptyBorder(20,50,0,50));
 
 		minePanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 		minePanel.setLayout(new GridLayout(row, col));
 
-		frame.setLayout(new BorderLayout(/*20,20 -> voor afstand tss componenten maar met createEmptyBorder is genoeg*/));
+		frame.setIconImage(new ImageIcon("mine.png").getImage());
+		frame.setLayout(new BorderLayout());
 		frame.add(minePanel, BorderLayout.CENTER);
+		frame.add(flagPanel, BorderLayout.NORTH);
 		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		frame.setLocationRelativeTo(null);
 
 		for (int i = 0; i < tiles.length; i++) {
 			for (int j = 0; j < tiles[0].length; j++) {
-				Tile e = new Tile(i, j);
-				tiles[i][j] = e;
+				tiles[i][j] = new Tile(i, j);;
 			}
 		}
 
@@ -67,7 +81,7 @@ public class Board extends JPanel {
 				minePanel.add(tiles[x][y]);
 			}
 		}
-
+		//solution();
 		frame.setVisible(true);
 	}
 
@@ -129,14 +143,23 @@ public class Board extends JPanel {
 				}
 			}
 		}
+
+		if (victory == false) {
+			victory();
+			victory = true;
+		}
 	}
 
-	public static void gameOver() {
+	public static void revealAll() {
 		for (int i = 0; i < tiles.length; i++) {
 			for (int j = 0; j < tiles[0].length; j++) {
 
 				if (tiles[i][j] instanceof Mine) {
 					((Mine) tiles[i][j]).revealMine();
+				} else if (tiles[i][j].getSurMines() == 0) {
+					tiles[i][j].revealZero();
+				} else {
+					tiles[i][j].revealTile();
 				}
 
 				tiles[i][j].setStop(true);
@@ -144,23 +167,63 @@ public class Board extends JPanel {
 		}
 	}
 
-	public void displayMinesLeft() {
-		// TODO - implement Board.displayMinesLeft
-		throw new UnsupportedOperationException();
+	public static void gameOver() {
+		revealAll();
+		JOptionPane.showMessageDialog(null, "You lost, better luck next time!");
 	}
 
-	public void leftClick(int r, int c) {
-		// TODO - implement Board.leftClick
-		throw new UnsupportedOperationException();
+	public static void DecreaseFlags() {
+		flagsLeft = flagsLeft - 1;
+		flags.setText("Flags left: " + flagsLeft);
+
 	}
 
-	public void rightClick(int r, int c) {
-		// TODO - implement Board.rightClick
-		throw new UnsupportedOperationException();
+	public static void IncreaseFlags() {
+		flagsLeft = flagsLeft + 1;
+		flags.setText("Flags left: " + flagsLeft);
+	}
+
+	public static void victory() {
+		int minesLeft = mines;
+		int tilesLeft = totalTiles - mines;
+		//if (flagsLeft == 0) {
+			for (int i = 0; i < tiles.length; i++) {
+				for (int j = 0; j < tiles[0].length; j++) {
+					if (tiles[i][j] instanceof Mine && tiles[i][j].getFlagged() == true) {
+						minesLeft = minesLeft - 1;
+					} else if ((!(tiles[i][j] instanceof Mine)) && tiles[i][j].getHidden() == false) {
+						tilesLeft = tilesLeft - 1;
+					}
+				}
+			}
+
+			if (minesLeft == 0 && tilesLeft == 0) {
+				revealAll();
+				JOptionPane.showMessageDialog(null, "Congratulations, you won!");
+			}
+		//}
 	}
 
 	public void restart() {
 		// TODO - implement Board.restart
 		throw new UnsupportedOperationException();
+	}
+
+	public void solution() {
+		int oneRow = 0;
+		for (int i = 0; i < tiles.length; i++) {
+			for (int j = 0; j < tiles[0].length; j++) {
+
+				if (oneRow%8 == 0) {
+					System.out.println("");
+				}
+				if ((tiles[i][j] instanceof Mine)) {
+					System.out.print("X");
+				} else {
+					System.out.print("O");
+				}
+				oneRow++;
+			}
+		}
 	}
 }

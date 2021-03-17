@@ -74,7 +74,6 @@ public class Tile extends JButton implements MouseListener {
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		if ((e.getButton() == 1) && (flagged == false) && (hidden == true) && (stop == false)) {
-
 			if (!(surMines == 0)) {
 				revealTile();
 			}
@@ -87,11 +86,15 @@ public class Tile extends JButton implements MouseListener {
 			if (flagged == true) {
 					this.setIcon(null);
 					this.flagged = false;
+					Board.IncreaseFlags();
 			} else {
 					this.setIcon(new ImageIcon("flag.png"));
 					this.flagged = true;
+					Board.DecreaseFlags();
 			}
+
 		}
+		Board.victory();
 	}
 
 	@Override
