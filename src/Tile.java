@@ -48,19 +48,15 @@ public class Tile extends JButton implements MouseListener {
 	public void revealTile() {
 		this.setBackground(Color.LIGHT_GRAY);
 		this.setIcon(null);
-		this.setText(surMines + "");
+		if (surMines != 0) {
+			this.setText(surMines + "");
+		}
 		this.hidden = false;
-	}
-
-	public void revealZero() {
-		this.setBackground(Color.LIGHT_GRAY);
-		this.hidden = false;
-		this.setIcon(null);
 	}
 
 	@Override
-	public void mouseClicked(MouseEvent e) {
-		if ((e.getButton() == 1) && (!flagged) && (hidden) && (!stop)) {
+	public void mousePressed(MouseEvent e) {
+		if ((e.getButton() == 1) && (!flagged) && (hidden)) {
 			if (!(surMines == 0)) {
 				revealTile();
 			}
@@ -69,7 +65,7 @@ public class Tile extends JButton implements MouseListener {
 				Board.zeroReveal(row, column);
 			}
 
-		} else if (e.getButton() == 3 && (hidden) && (!stop)) {
+		} else if (e.getButton() == 3 && (hidden)) {
 			if (flagged) {
 					this.setIcon(null);
 					this.flagged = false;
@@ -81,11 +77,11 @@ public class Tile extends JButton implements MouseListener {
 			}
 
 		}
-		Board.victory();
+		if (!stop) Board.victory();
 	}
 
 	@Override
-	public void mousePressed(MouseEvent e) {
+	public void mouseClicked(MouseEvent e) {
 
 	}
 

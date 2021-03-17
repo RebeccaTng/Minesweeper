@@ -11,7 +11,6 @@ public class Board {
 	private static int flagsLeft;
 	private static JLabel flags;
 	private static int totalTiles;
-	private static boolean victory;
 
 	public Board(Difficulty difficulty) {
 		this.difficulty = difficulty;
@@ -46,7 +45,6 @@ public class Board {
 		tiles = new Tile[row][col];
 		flagsLeft = mines;
 		totalTiles = row*col;
-		victory = false;
 
 		flags = new JLabel("Flags left: " + flagsLeft);
 		flags.setFont(new Font("", Font.PLAIN, 20));
@@ -55,7 +53,7 @@ public class Board {
 		flags.setPreferredSize(new Dimension(160,50));
 		JPanel flagPanel = new JPanel(new GridBagLayout());
 		flagPanel.add(flags);
-		flagPanel.setBorder(BorderFactory.createEmptyBorder(20,50,0,50));
+		flagPanel.setBorder(BorderFactory.createEmptyBorder(20,20,0,20));
 
 		minePanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 		minePanel.setLayout(new GridLayout(row, col));
@@ -81,7 +79,7 @@ public class Board {
 				minePanel.add(tiles[x][y]);
 			}
 		}
-		//solution();
+		solution();
 		frame.setVisible(true);
 	}
 
@@ -126,27 +124,16 @@ public class Board {
 			for (int q = c - 1; q <= c + 1; q++) {
 				if (0 <= p && p < tiles.length && 0 <= q && q < tiles[0].length) {
 					if (!(tiles[p][q] instanceof Mine)) {
-						int count = tiles[p][q].getSurMines();
-
 						if ((tiles[p][q]).getHidden()) {
+							tiles[p][q].revealTile();
 
-							if (!(count == 0)) {
-								tiles[p][q].revealTile();
-							}
-
-							if (count == 0) {
-								tiles[p][q].revealZero();
+							if (tiles[p][q].getSurMines() == 0) {
 								zeroReveal(p,q);
 							}
 						}
 					}
 				}
 			}
-		}
-
-		if (!victory) {
-			victory();
-			victory = true;
 		}
 	}
 
@@ -156,8 +143,6 @@ public class Board {
 
 				if (tiles[i][j] instanceof Mine) {
 					((Mine) tiles[i][j]).revealMine();
-				} else if (tiles[i][j].getSurMines() == 0) {
-					tiles[i][j].revealZero();
 				} else {
 					tiles[i][j].revealTile();
 				}
@@ -173,13 +158,13 @@ public class Board {
 	}
 
 	public static void DecreaseFlags() {
-		flagsLeft = flagsLeft - 1;
+		flagsLeft--;
 		flags.setText("Flags left: " + flagsLeft);
 
 	}
 
 	public static void IncreaseFlags() {
-		flagsLeft = flagsLeft + 1;
+		flagsLeft++;
 		flags.setText("Flags left: " + flagsLeft);
 	}
 
@@ -189,9 +174,9 @@ public class Board {
 		for (int i = 0; i < tiles.length; i++) {
 			for (int j = 0; j < tiles[0].length; j++) {
 				if (tiles[i][j] instanceof Mine && tiles[i][j].getFlagged()) {
-					minesLeft = minesLeft - 1;
+					minesLeft--;
 				} else if ((!(tiles[i][j] instanceof Mine)) && !tiles[i][j].getHidden()) {
-					tilesLeft = tilesLeft - 1;
+					tilesLeft--;
 				}
 			}
 		}
