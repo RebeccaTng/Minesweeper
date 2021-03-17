@@ -12,7 +12,7 @@ public class Mine extends Tile {
 	public void mouseClicked(MouseEvent e) {
 		super.mouseClicked(e);
 
-		if ((e.getButton() == 1) && (getFlagged() == false) && (getHidden() == true)) {
+		if ((e.getButton() == 1) && (!getFlagged()) && (getHidden())) {
 			Board.gameOver();
 		}
 	}

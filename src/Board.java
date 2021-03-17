@@ -4,7 +4,7 @@ import java.awt.*;
 public class Board {
 
 	private static Tile[][] tiles;
-	private Difficulty difficulty;
+	private final Difficulty difficulty;
 	private static int mines;
 	private int row;
 	private int col;
@@ -69,7 +69,7 @@ public class Board {
 
 		for (int i = 0; i < tiles.length; i++) {
 			for (int j = 0; j < tiles[0].length; j++) {
-				tiles[i][j] = new Tile(i, j);;
+				tiles[i][j] = new Tile(i, j);
 			}
 		}
 
@@ -128,7 +128,7 @@ public class Board {
 					if (!(tiles[p][q] instanceof Mine)) {
 						int count = tiles[p][q].getSurMines();
 
-						if ((tiles[p][q]).getHidden() == true) {
+						if ((tiles[p][q]).getHidden()) {
 
 							if (!(count == 0)) {
 								tiles[p][q].revealTile();
@@ -144,7 +144,7 @@ public class Board {
 			}
 		}
 
-		if (victory == false) {
+		if (!victory) {
 			victory();
 			victory = true;
 		}
@@ -186,22 +186,20 @@ public class Board {
 	public static void victory() {
 		int minesLeft = mines;
 		int tilesLeft = totalTiles - mines;
-		//if (flagsLeft == 0) {
-			for (int i = 0; i < tiles.length; i++) {
-				for (int j = 0; j < tiles[0].length; j++) {
-					if (tiles[i][j] instanceof Mine && tiles[i][j].getFlagged() == true) {
-						minesLeft = minesLeft - 1;
-					} else if ((!(tiles[i][j] instanceof Mine)) && tiles[i][j].getHidden() == false) {
-						tilesLeft = tilesLeft - 1;
-					}
+		for (int i = 0; i < tiles.length; i++) {
+			for (int j = 0; j < tiles[0].length; j++) {
+				if (tiles[i][j] instanceof Mine && tiles[i][j].getFlagged()) {
+					minesLeft = minesLeft - 1;
+				} else if ((!(tiles[i][j] instanceof Mine)) && !tiles[i][j].getHidden()) {
+					tilesLeft = tilesLeft - 1;
 				}
 			}
+		}
 
-			if (minesLeft == 0 && tilesLeft == 0) {
-				revealAll();
-				JOptionPane.showMessageDialog(null, "Congratulations, you won!");
-			}
-		//}
+		if (minesLeft == 0 && tilesLeft == 0) {
+			revealAll();
+			JOptionPane.showMessageDialog(null, "Congratulations, you won!");
+		}
 	}
 
 	public void restart() {
@@ -215,7 +213,7 @@ public class Board {
 			for (int j = 0; j < tiles[0].length; j++) {
 
 				if (oneRow%8 == 0) {
-					System.out.println("");
+					System.out.println();
 				}
 				if ((tiles[i][j] instanceof Mine)) {
 					System.out.print("X");

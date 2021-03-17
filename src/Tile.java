@@ -5,11 +5,10 @@ import java.awt.event.MouseListener;
 
 public class Tile extends JButton implements MouseListener {
 
-	private int row;
-	private int column;
+	private final int row;
+	private final int column;
 	private boolean hidden;
 	private boolean flagged;
-	private ImageIcon flag;
 	private int surMines;
 	private boolean stop;
 
@@ -32,18 +31,6 @@ public class Tile extends JButton implements MouseListener {
 
 	public boolean getFlagged() {
 		return this.flagged;
-	}
-
-	public void setFlagged(boolean flagged) {
-		this.flagged = flagged;
-	}
-
-	public int getRow() {
-		return this.row;
-	}
-
-	public int getColumn() {
-		return this.column;
 	}
 
 	public void setSurMines(int count) {
@@ -73,7 +60,7 @@ public class Tile extends JButton implements MouseListener {
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		if ((e.getButton() == 1) && (flagged == false) && (hidden == true) && (stop == false)) {
+		if ((e.getButton() == 1) && (!flagged) && (hidden) && (!stop)) {
 			if (!(surMines == 0)) {
 				revealTile();
 			}
@@ -82,8 +69,8 @@ public class Tile extends JButton implements MouseListener {
 				Board.zeroReveal(row, column);
 			}
 
-		} else if (e.getButton() == 3 && (hidden == true) && (stop == false)) {
-			if (flagged == true) {
+		} else if (e.getButton() == 3 && (hidden) && (!stop)) {
+			if (flagged) {
 					this.setIcon(null);
 					this.flagged = false;
 					Board.IncreaseFlags();
