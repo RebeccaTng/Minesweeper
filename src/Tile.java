@@ -5,8 +5,8 @@ import java.awt.event.MouseListener;
 
 public class Tile extends JButton implements MouseListener {
 
-	private final int row;
-	private final int column;
+	private int row;
+	private int column;
 	private boolean hidden;
 	private boolean flagged;
 	private int surMines;
@@ -19,6 +19,32 @@ public class Tile extends JButton implements MouseListener {
 		flagged = false;
 		this.addMouseListener(this);
 		stop = false;
+		isMine = false;
+		firstClickedTile = false;
+	}
+
+	public boolean getFirstClickedTile() {
+		return firstClickedTile;
+	}
+
+	public void setFirstClickedTile(boolean firstClickedTile) {
+		this.firstClickedTile = firstClickedTile;
+	}
+
+	public boolean getMine() {
+		return isMine;
+	}
+
+	public void setMine(boolean mine) {
+		isMine = mine;
+	}
+
+	public int getRow() {
+		return row;
+	}
+
+	public int getColumn() {
+		return column;
 	}
 
 	public boolean getHidden() {
@@ -27,6 +53,10 @@ public class Tile extends JButton implements MouseListener {
 
 	public void setHidden(boolean hidden) {
 		this.hidden = hidden;
+	}
+
+	public void setFlagged(boolean flagged) {
+		this.flagged = flagged;
 	}
 
 	public boolean getFlagged() {
@@ -43,6 +73,10 @@ public class Tile extends JButton implements MouseListener {
 
 	public void setStop(boolean stop) {
 		this.stop = stop;
+	}
+
+	public boolean isStop() {
+		return stop;
 	}
 
 	public void revealTile() {
