@@ -6,7 +6,7 @@ import java.awt.event.MouseEvent;
 public class Board extends MouseAdapter {
 
 	private Tile[][] tiles;
-	private Difficulty difficulty;
+	private final Difficulty difficulty;
 	private int mines;
 	private int row;
 	private int col;
