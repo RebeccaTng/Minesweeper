@@ -133,7 +133,7 @@ public class Board extends MouseAdapter {
 		}
 	}
 
-	public static void zeroReveal(int r, int c) {
+	public void zeroReveal(int r, int c) {
 		for (int p = r - 1; p <= r + 1; p++) {
 			for (int q = c - 1; q <= c + 1; q++) {
 				if (0 <= p && p < tiles.length && 0 <= q && q < tiles[0].length) {
@@ -151,7 +151,7 @@ public class Board extends MouseAdapter {
 		}
 	}
 
-	public static void revealAll() {
+	public void revealAll() {
 		for (int i = 0; i < tiles.length; i++) {
 			for (int j = 0; j < tiles[0].length; j++) {
 
@@ -161,23 +161,22 @@ public class Board extends MouseAdapter {
 		}
 	}
 
-	public static void gameOver() {
+	public void gameOver() {
 		revealAll();
 		JOptionPane.showMessageDialog(null, "You lost, better luck next time!");
 	}
 
-	public static void DecreaseFlags() {
+	public void DecreaseFlags() {
 		flagsLeft--;
 		flags.setText("Flags left: " + flagsLeft);
-
 	}
 
-	public static void IncreaseFlags() {
+	public void IncreaseFlags() {
 		flagsLeft++;
 		flags.setText("Flags left: " + flagsLeft);
 	}
 
-	public static void victory() {
+	public void victory() {
 		int minesLeft = mines;
 		int tilesLeft = totalTiles - mines;
 		for (int i = 0; i < tiles.length; i++) {
@@ -197,8 +196,8 @@ public class Board extends MouseAdapter {
 	}
 
 	public void restart() {
-		// TODO - implement Board.restart
-		throw new UnsupportedOperationException();
+		frame.setVisible(false);
+		start();
 	}
 
 	public void solution() {
@@ -209,13 +208,63 @@ public class Board extends MouseAdapter {
 				if (oneRow%8 == 0) {
 					System.out.println();
 				}
-				if ((tiles[i][j] instanceof Mine)) {
+				if ((tiles[i][j].getMine())) {
 					System.out.print("X");
 				} else {
 					System.out.print("O");
 				}
 				oneRow++;
 			}
+		}
+	}
+
+	public void mousePressed(MouseEvent e) {
+
+		if (e.getComponent().equals(restart)) {
+			if (e.getButton() == 1) {
+				restart();
+			}
+		} else {
+			Tile t = (Tile) e.getComponent();
+
+			if (!firstClicked) {
+				firstClicked = true;
+				t.setFirstClickedTile(true);
+				populateMines();
+				surroundingMines();
+				minePanel.revalidate();
+				minePanel.repaint();
+				//solution();
+			}
+
+			if ((e.getButton() == 1) && (!t.getFlagged()) && (t.getHidden())) {
+				if (!(t.getSurMines() == 0)) {
+					t.revealTile();
+				}
+
+				if (t.getSurMines() == 0 && !(t.getMine())) {
+					zeroReveal(t.getRow(), t.getColumn());
+				}
+
+				if (t.getMine()) {
+					if ((!t.getFlagged()) && (t.getHidden())) {
+						gameOver();
+					}
+				}
+
+			} else if (e.getButton() == 3 && (t.getHidden())) {
+				if (t.getFlagged()) {
+					t.setIcon(null);
+					t.setFlagged(false);
+					IncreaseFlags();
+				} else {
+					t.setIcon(new ImageIcon("flag.png"));
+					t.setFlagged(true);
+					DecreaseFlags();
+				}
+
+			}
+			if (!t.isStop()) victory();
 		}
 	}
 }
