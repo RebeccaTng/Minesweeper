@@ -234,7 +234,7 @@ public class Board extends MouseAdapter {
 				surroundingMines();
 				minePanel.revalidate();
 				minePanel.repaint();
-				//solution();
+				//solution(); dit is voor debugging
 			}
 
 			if ((e.getButton() == 1) && (!t.getFlagged()) && (t.getHidden())) {
