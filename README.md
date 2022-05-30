@@ -1,10 +1,10 @@
 # Minesweeper
-## Table of contents
+## Table of Contents
 - [Context](#context)
-- [Description](#description)
+- [Project Description](#project-description)
 ___
 ## Context
 This code was made for the course Software Development of Group T KU Leuven.
 
-## Description
+## Project Description
 Standard minesweeper game with a simple user interface.
